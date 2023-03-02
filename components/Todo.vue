@@ -9,7 +9,6 @@ const emit = defineEmits(['delete', 'update'])
 const checked = ref(props.todo.isComplete)
 
 watch(checked, async () => {
-  console.log('updated', checked.value)
   await $fetch(`${apiUrl}/todos/${props.todo.id}`, {
     method: 'PUT',
     body: { ...props.todo, isComplete: checked.value },
@@ -30,7 +29,10 @@ const deleteTask = async () => {
     <ui-checkbox v-model="checked" />
     <section class="column gap-2 flex-auto">
       <div class="flex flex-col sm-flex-row justify-between items-center">
-        <h3 class="text-5.fw-700">
+        <h3
+          class="text-5.fw-700"
+          :class="checked ? 'line-through c-gray-300' : ''"
+        >
           {{ todo.header }}
         </h3>
         <div class="column">
@@ -38,7 +40,7 @@ const deleteTask = async () => {
             <span class="c-gray-300">
               Дата создания:
             </span>
-            <span class="ml-1 c-blue" v-if="todo.startedAt">
+            <span v-if="todo.startedAt" class="ml-1 c-blue">
               {{ new Date(todo.startedAt).toLocaleString() }}
             </span>
           </span>
@@ -52,7 +54,10 @@ const deleteTask = async () => {
           </span>
         </div>
       </div>
-      <span class="text-3 c-gray-100 fw-300">
+      <span
+        class="text-3 c-gray-100 fw-300"
+        :class="checked ? 'line-through c-gray-300' : ''"
+      >
         {{ todo.description }}
       </span>
     </section>
