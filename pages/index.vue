@@ -2,34 +2,42 @@
 import VueDatePicker from '@vuepic/vue-datepicker'
 import { apiUrl } from '../constants/index'
 
-const { data: todos } = await useFetch(`${apiUrl}/todos`)
+const { data: todos, refresh } = await useFetch<Task[]>(`${apiUrl}/todos`)
 
-interface TaskFields {
-  header: string
-  description: string
-  endedAt: Date
-}
 const newTask = reactive<TaskFields>({
   header: '',
   description: '',
   endedAt: new Date(Date.now()),
+  startedAt: new Date(Date.now()),
+  isComplete: false,
 })
 const isFilled = computed(() => {
-  return Object.values(newTask).filter(Boolean).length === Object.values(newTask).length
+  return !!newTask.header && !!newTask.description && !!newTask.endedAt
 })
 
 const errors = reactive({ description: '' })
 
-const createTask = async () => {
+const clearForm = () => {
+  newTask.header = ''
+  newTask.description = ''
+  newTask.isComplete = false
+}
+
+const createTask = () => {
   if (newTask.description.length <= 3) {
     errors.description = 'Описание должно быть больше 3 симоволов'
     return false
   }
-  const r = await $fetch(`${apiUrl}/todos`, {
+  return $fetch(`${apiUrl}/todos`, {
     method: 'POST',
     body: { ...newTask, createdAt: new Date(Date.now()) },
   })
-  return true
+    .then(() => {
+      clearForm()
+      refresh()
+      return true
+    })
+    .catch(() => false)
 }
 </script>
 
@@ -50,8 +58,8 @@ const createTask = async () => {
         <form
           action="#"
           class="column gap-3"
-          @submit.prevent="() => {
-            if (createTask()) setIsOpen()
+          @submit.prevent="async() => {
+            if (await createTask()) setIsOpen()
           }"
         >
           <ui-input v-model="newTask.header" placeholder="Заголовок" />
@@ -84,5 +92,40 @@ const createTask = async () => {
     </template>
   </modal>
 
-  <pre>{{ todos }}</pre>
+  <div class="flex justify-between mt-16">
+    <span>
+      <span class="fs-14 c-blue">
+        Всего задач
+      </span>
+      <span class="ui-label ml-2">
+        {{ todos?.length }}
+      </span>
+    </span>
+    <span>
+      <span class="fs-14 c-purple">
+        Выполнено
+      </span>
+      <span class="ui-label ml-2">
+        {{ todos?.filter(({ isComplete }) => isComplete).length }}
+      </span>
+    </span>
+  </div>
+
+  <div v-if="!todos?.length" class="rounded-2 h-200px b-t border-gray-400 mt-8">
+    <section class="text-center mt-16 column items-center">
+      <i class="i-carbon-align-box-top-center p-2 text-14 c-gray-400" />
+      <span class="c-gray-300 column mt-2">
+        <span class="fw-700">
+          У Вас еще нет созданных задач
+        </span>
+        <span class="fw-300">
+          Создавайте задачи и организуйте свои дела
+        </span>
+      </span>
+    </section>
+  </div>
+
+  <div v-else class="column gap-2 mt-4">
+    <todo v-for="todo in todos" :key="todo.id" :todo="todo" @delete="refresh" @update="refresh" />
+  </div>
 </template>

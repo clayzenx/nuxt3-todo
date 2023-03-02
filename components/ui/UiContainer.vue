@@ -1,5 +1,5 @@
 <template>
   <section class="ui-container">
-    slot
+    <slot />
   </section>
 </template>

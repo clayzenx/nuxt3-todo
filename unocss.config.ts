@@ -21,7 +21,7 @@ export default defineConfig({
     ['icon-hover', 'rounded-2 hover-bg-gray-400 p-2 flex-inline cursor-pointer'],
 
     ['app-container', 'w-100% max-w-736px ma'],
-    ['ui-container', 'border border-gray-400 bg-500 rounded-2 p-4'],
+    ['ui-container', 'border border-gray-400 bg-gray-500 rounded-2 p-4'],
     ['ui-input', 'bg-gray-500 border border-gray-700 b-rd-8px py-4 px-9 c-gray-300 outline-none hover-border-purple-dark active-border-purple-dark focus-border-purple-dark focus-c-gray-100'],
     ['ui-button', 'bg-blue-dark p-4 rounded-2 fw-700 hover-bg-blue w-100% text-center c-gray-100 active-border-purple-dark target-border-purple-dark outline-purple-dark disabled-bg-gray-300 disabled-hover-bg-gray-300 disabled-cursor-not-allowed required-border-danger'],
     ['ui-label', 'rounded-5 py-1 px-3 bg-gray-400 c-gray-300 hover-c-gray-100'],
@@ -40,7 +40,7 @@ export default defineConfig({
         inter: [
           {
             name: 'Inter',
-            weights: ['400', '700'],
+            weights: ['300', '400', '700', '900'],
           },
           {
             name: 'sans-serif',
