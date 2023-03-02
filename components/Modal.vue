@@ -7,16 +7,14 @@ import {
   TransitionRoot,
 } from '@headlessui/vue'
 
-const isOpen = ref<boolean>(true)
+const isOpen = ref<boolean>(false)
 const setIsOpen = (value = !isOpen.value) => {
   isOpen.value = value
 }
 </script>
 
 <template>
-  <div class="fixed inset-0 flex items-center justify-center">
-    <slot name="trigger" :data="{ isOpen, setIsOpen }" />
-  </div>
+  <slot name="trigger" :data="{ isOpen, setIsOpen }" />
   <TransitionRoot appear :show="isOpen" as="template">
     <Dialog as="div" class="relative z-10" @close="setIsOpen()">
       <TransitionChild
@@ -28,7 +26,7 @@ const setIsOpen = (value = !isOpen.value) => {
         leave-from="opacity-100"
         leave-to="opacity-0"
       >
-        <div class="fixed inset-0 bg-black bg-opacity-25" />
+        <div class="fixed inset-0 bg-black bg-opacity-50" />
       </TransitionChild>
 
       <div class="fixed inset-0 overflow-y-auto">
@@ -45,7 +43,7 @@ const setIsOpen = (value = !isOpen.value) => {
             leave-to="opacity-0 scale-95"
           >
             <DialogPanel
-              class="w-full max-w-md transform overflow-hidden rounded-xl bg-gray-400 p-6 text-left align-middle shadow-xl transition-all"
+              class="w-full max-w-md transform rounded-xl bg-gray-400 p-6 text-left align-middle shadow-xl transition-all"
             >
               <slot :data="{ isOpen, setIsOpen }" />
             </DialogPanel>
