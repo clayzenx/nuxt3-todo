@@ -6,10 +6,13 @@ const props = defineProps<{
 }>()
 const emit = defineEmits(['delete', 'update'])
 
-watch(props.todo, async () => {
+const checked = ref(props.todo.isComplete)
+
+watch(checked, async () => {
+  console.log('updated', checked.value)
   await $fetch(`${apiUrl}/todos/${props.todo.id}`, {
     method: 'PUT',
-    body: props.todo,
+    body: { ...props.todo, isComplete: checked.value },
   })
   emit('update')
 })
@@ -24,7 +27,7 @@ const deleteTask = async () => {
 
 <template>
   <ui-container class="flex items-start justify-between gap-4 w-100%">
-    <ui-checkbox v-model="todo.isComplete" />
+    <ui-checkbox v-model="checked" />
     <section class="column gap-2 flex-auto">
       <div class="flex flex-col sm-flex-row justify-between items-center">
         <h3 class="text-5.fw-700">

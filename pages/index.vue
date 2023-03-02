@@ -126,6 +126,8 @@ const createTask = () => {
   </div>
 
   <div v-else class="column gap-2 mt-4">
-    <todo v-for="todo in todos" :key="todo.id" :todo="todo" @delete="refresh" @update="refresh" />
+    <nuxt-link v-for="todo in todos" :key="todo.id" :to="`/${todo.id}`">
+      <todo :todo="todo" @delete="refresh" @update="refresh" />
+    </nuxt-link>
   </div>
 </template>
