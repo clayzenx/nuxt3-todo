@@ -8,6 +8,8 @@
     </h1>
   </header>
   <main>
-    <slot />
+    <div class="app-container">
+      <slot />
+    </div>
   </main>
 </template>
