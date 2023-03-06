@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import VueDatePicker from '@vuepic/vue-datepicker'
+import { storeToRefs } from 'pinia'
 
-const { fetchTodos, createTodo, todoList: todos, completed } = useTodosStore()
+const { fetchTodos, createTodo, todoList: todos } = useTodosStore()
+const { completed } = storeToRefs(useTodosStore())
 await fetchTodos()
 
 const newTask = reactive<TaskFields>({

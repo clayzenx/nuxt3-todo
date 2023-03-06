@@ -8,7 +8,6 @@ const { updateTodo, deleteTodo } = useTodosStore()
 const checked = ref(props.todo.isComplete)
 
 watch(checked, (v: boolean) => {
-  console.log('update', v)
   if (props.todo.id)
     updateTodo(props.todo.id, { isComplete: v })
 })
