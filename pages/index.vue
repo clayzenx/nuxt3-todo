@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import VueDatePicker from '@vuepic/vue-datepicker'
-import { apiUrl } from '../constants/index'
 
-const { data: todos, refresh } = await useFetch<Task[]>(`${apiUrl}/todos`)
+const { fetchTodos, createTodo, todoList: todos } = useTodosStore()
+await fetchTodos()
 
 const newTask = reactive<TaskFields>({
   header: '',
@@ -14,7 +14,6 @@ const newTask = reactive<TaskFields>({
 const isFilled = computed(() => {
   return !!newTask.header && !!newTask.description && !!newTask.endedAt
 })
-
 const errors = reactive({ description: '' })
 
 const clearForm = () => {
@@ -24,20 +23,14 @@ const clearForm = () => {
 }
 
 const createTask = () => {
-  if (newTask.description.length <= 3) {
+  if (newTask.description && newTask.description.length <= 3) {
     errors.description = 'Описание должно быть больше 3 симоволов'
     return false
   }
-  return $fetch(`${apiUrl}/todos`, {
-    method: 'POST',
-    body: { ...newTask, createdAt: new Date(Date.now()) },
-  })
-    .then(() => {
-      clearForm()
-      refresh()
-      return true
-    })
-    .catch(() => false)
+  return createTodo(newTask).then(() => {
+    clearForm()
+    return true
+  }).catch(() => false)
 }
 </script>
 
@@ -127,7 +120,7 @@ const createTask = () => {
 
   <div v-else class="column gap-2 mt-4">
     <nuxt-link v-for="todo in todos" :key="todo.id" :to="`/${todo.id}`">
-      <todo :todo="todo" @delete="refresh" @update="refresh" />
+      <todo :todo="todo" />
     </nuxt-link>
   </div>
 </template>

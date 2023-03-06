@@ -1,9 +1,15 @@
 <script setup lang="ts">
-import { apiUrl } from '../constants/index'
+import { storeToRefs } from 'pinia'
+
 const route = useRoute()
-const { data: todo } = await useFetch<Task>(`${apiUrl}/todos/${route.params.id}`)
+const { fetchTodo } = useTodosStore()
+const { todo } = storeToRefs(useTodosStore())
+
+await fetchTodo(+route.params.id)
+
 useHead({
   title: todo.value?.header,
+
   meta: [
     { name: 'description', content: todo.value?.description },
   ],

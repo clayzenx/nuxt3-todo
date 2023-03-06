@@ -1,26 +1,20 @@
 <script setup lang="ts">
-import { apiUrl } from '../constants/index'
-
 const props = defineProps<{
   todo: Task
 }>()
-const emit = defineEmits(['delete', 'update'])
+
+const { updateTodo, deleteTodo } = useTodosStore()
 
 const checked = ref(props.todo.isComplete)
 
-watch(checked, async () => {
-  await $fetch(`${apiUrl}/todos/${props.todo.id}`, {
-    method: 'PUT',
-    body: { ...props.todo, isComplete: checked.value },
-  })
-  emit('update')
+watch(checked, (v: boolean) => {
+  if (props.todo.id)
+    updateTodo(props.todo.id, { isComplete: v })
 })
 
 const deleteTask = async () => {
-  await $fetch(`${apiUrl}/todos/${props.todo.id}`, {
-    method: 'DELETE',
-  })
-  emit('delete')
+  if (props.todo.id)
+    deleteTodo(props.todo.id)
 }
 </script>
 
