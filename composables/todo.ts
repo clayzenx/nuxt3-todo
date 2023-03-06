@@ -5,6 +5,8 @@ export const useTodosStore = defineStore('todos', () => {
   const todoList = ref(new Array<Task>())
   const todo = ref<Task | null>(null)
 
+  const completed = computed(() => todoList.value.filter(({ isComplete }) => isComplete).length)
+
   const fetchTodo = async (id: number) => {
     const { data, refresh } = await useAsyncData<Task | null>('todo', () => $fetch(`${apiUrl}/todos/${id}`))
     todo.value = data.value
@@ -34,7 +36,9 @@ export const useTodosStore = defineStore('todos', () => {
   }
 
   const updateTodo = (id: number, update: TaskFields) => {
-    todoList.value.map(todo => todo.id === id ? ({ ...todo, ...update }) : todo)
+    const idx: number = todoList.value.findIndex(todo => todo.id === id)
+    const todo: Task = todoList.value[idx]
+    todoList.value[idx] = { ...todo, ...update }
     return $fetch(`${apiUrl}/todos/${id}`, {
       method: 'PUT',
       body: { ...update },
@@ -54,6 +58,7 @@ export const useTodosStore = defineStore('todos', () => {
     createTodo,
     todo,
     todoList,
+    completed,
     updateTodo,
     deleteTodo,
   }

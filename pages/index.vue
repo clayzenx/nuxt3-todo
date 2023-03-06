@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import VueDatePicker from '@vuepic/vue-datepicker'
 
-const { fetchTodos, createTodo, todoList: todos } = useTodosStore()
+const { fetchTodos, createTodo, todoList: todos, completed } = useTodosStore()
 await fetchTodos()
 
 const newTask = reactive<TaskFields>({
@@ -99,7 +99,7 @@ const createTask = () => {
         Выполнено
       </span>
       <span class="ui-label ml-2">
-        {{ todos?.filter(({ isComplete }) => isComplete).length }}
+        {{ completed }}
       </span>
     </span>
   </div>
